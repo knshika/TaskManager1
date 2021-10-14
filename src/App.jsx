@@ -3,8 +3,8 @@ import TaskManager from './components/TaskManager';
 
 function App() {
   return (
-    <div className="bg-gray-200 text-center h-screen">
-      <h1>hello</h1>
+    <div className="p-4 text-center h-screen">
+      {/* <p className="p-1 align-left"> Click + New Task To create your Todays Task</p> */}
       <TaskManager />
     </div>
   );

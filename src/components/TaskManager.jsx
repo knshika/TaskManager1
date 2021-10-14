@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { v1 as uuid } from 'uuid';
-import TaskList from './TaskList';
+// import TaskList from './TaskList';
+import { HiOutlineViewGridAdd } from 'react-icons/hi';
+
+import TaskStatusCard from './TaskStatusCard';
 import TodoModal from './TodoModal';
 
 const DEFAULT_TASK = {
@@ -75,25 +78,39 @@ const TaskManager = () => {
   return (
     <>
       <div className="flex flex-row h-screen">
-        <div className="flex-2 bg-red-300 p-6">
+        <div className="flex-2 bg-gray-100 p-6 mr-2">
           <button
             type="button"
-            className="p-2 m-1 bg-white-200 text-xl"
+            className="p-2 m-1 bg-white-200 border-2 border-gray-800 text-xl"
             onClick={() => setShow(true)}
           >
-            +
+            <HiOutlineViewGridAdd />
           </button>
         </div>
 
-        <div className="flex-1 bg-yellow-300 flex items-start">
-          <TaskList
+        <div className="flex flex-col flex-1 ">
+          <h1 className="p-1 font-serif uppercase text-4xl text-gray-600">Task Manager</h1>
+
+          <div className="flex items-start">
+            <TaskStatusCard
+              tasks={tasks}
+              onCreate={createTask}
+              onRemove={removeTask}
+              onEdit={(task) => {
+                setSelectedTask(task);
+                setShow(true);
+              }}
+            />
+          </div>
+
+          {/* <TaskList
             tasks={tasks}
             onRemove={removeTask}
             onEdit={(task) => {
               setSelectedTask(task);
               setShow(true);
             }}
-          />
+          /> */}
         </div>
       </div>
 
