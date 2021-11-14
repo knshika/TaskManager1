@@ -1,66 +1,69 @@
 /* eslint-disable max-len */
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import TaskList from './TaskList';
 
-const lists = ['Pending', 'InProgress', 'Finished', 'Backlogs'];
-
 const TaskStatusCard = ({
-  tasks, onRemove, onEdit, onCreate,
+  tasks, onRemove, onEdit, updateTask,
 }) => {
-  // const getTasks = (prefix) => tasks.filter((val) => val.status === prefix).map((task) => ({ ...task, prefix }));
+  const taskLists = useMemo(() => {
+    // const lists = {}; // { inprogress: [...], pending: [...] }
+    // for (const task of tasks) {
+    //   if (lists[task.status]) {
+    //     lists[task.status].push(task);
+    //   } else {
+    //     lists[task.status] = [task];
+    //   }
+    // }
+    // return lists;
 
-  // eslint-disable-next-line max-len
-  const generateLists = () => lists.reduce((data, statusVal) => ({ ...data, [statusVal]: [] }), {});
+    const value = tasks.reduce(
+      (_lists, task) => {
+        const lists = _lists;
+        if (lists[task.status]) {
+          lists[task.status].push(task);
+        } else {
+          lists[task.status] = [task];
+        }
+        return lists;
+      },
+      {
+        pending: [],
+        inprogress: [],
+        finished: [],
+        backlogs: [],
+      },
+    );
 
-  const [elements, setElements] = useState(generateLists());
-
-  useEffect(() => {
-    setElements(generateLists());
-  }, []);
+    return value;
+  }, [tasks]);
 
   const onDragEnd = (result) => {
     if (!result.destination) {
       return;
     }
 
-    const listCopy = { ...elements };
+    const status = result.destination.droppableId;
+    const taskId = result.draggableId;
 
-    const sourceList = listCopy[result.source.droppableId];
-
-    const [removedElement, newSourceList] = onRemove(sourceList, result.source.index);
-    listCopy[result.source.droppableId] = newSourceList;
-
-    const destinationList = listCopy[result.destination.droppableId];
-    listCopy[result.destination.droppableId] = onCreate(
-      destinationList,
-      result.destination.index,
-      removedElement,
-    );
-
-    setElements(listCopy);
+    updateTask({ id: taskId, status });
   };
 
   return (
-    <div className="flex flex-col h-full w-full">
+    <div className="flex flex-row h-full w-full max-w-full overflow-auto space-x-4">
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="flex flex-row ">
-          {lists.map((statusVal) => (
-            <TaskList
-              elements={elements[statusVal]}
-              key={statusVal}
-              prefix={statusVal}
-              tasks={tasks}
-              onRemove={onRemove}
-              onEdit={onEdit}
-            />
-          ))}
-        </div>
+        {Object.entries(taskLists).map(([status, items]) => (
+          <TaskList
+            items={items}
+            key={status}
+            listTitle={status}
+            tasks={tasks}
+            onRemove={onRemove}
+            onEdit={onEdit}
+            updateTask={updateTask}
+          />
+        ))}
       </DragDropContext>
-      {/* <h1>Requested</h1>
-      <div className="flex flex-col">
-        <TaskCard />
-      </div> */}
     </div>
   );
 };

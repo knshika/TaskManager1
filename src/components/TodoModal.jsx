@@ -17,7 +17,7 @@ const TodoModal = ({
     <div className="flex fixed inset-4 bg-gray-100 justify-center items-center">
       <div className="flex flex-col p-8 bg-gray-200 ">
         <div className="flex w-full mb-8 flex-row justify-between items-center">
-          <h2 className=" uppercase text-gray-500 text-2xl">
+          <h2 className="uppercase text-gray-500 text-2xl">
             {task.id ? 'Edit Task' : 'Create a Task'}
           </h2>
           <span className="text-xl">
@@ -83,25 +83,32 @@ const TodoModal = ({
         <div className="flex text-gray-500  mb-4">
           <label htmlFor="status">
             Task Status
-            <select className="ml-4 bg-gray-300 p-2" name="status" id="status">
-              <option value={task.status} default>
+            <select
+              className="ml-4 bg-gray-300 p-2"
+              name="status"
+              id="status"
+              value={task.status}
+              onChange={handleChange}
+            >
+              <option value="pending" default>
                 Pending
               </option>
-              <option value={task.status}>InProgress</option>
-              <option value={task.status}>Finished</option>
-              <option value={task.status}>Backlogs</option>
+              <option value="inprogress">InProgress</option>
+              <option value="finished">Finished</option>
+              <option value="backlogs">Backlogs</option>
             </select>
           </label>
         </div>
 
         <div className="flex items-center mb-4">
-          <h3 className=" text-gray-500 mr-4 mb-4">Deadlline</h3>
+          <h3 className=" text-gray-500 mr-4 mb-4">Deadline</h3>
           <input
             className=" mb-4 text-gray-500 bg-gray-300 p-2"
             type="date"
             id="end_date"
             name="Set End Date"
             default=""
+            required
           />
           <input
             className=" mb-4 ml-2 text-gray-500 bg-gray-300 p-2"
@@ -109,6 +116,7 @@ const TodoModal = ({
             name="end-time"
             id="end-time"
             default=""
+            required
           />
         </div>
 

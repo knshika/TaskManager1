@@ -10,7 +10,7 @@ const DEFAULT_TASK = {
   title: '',
   description: '',
   deadline: '',
-  status: '',
+  status: 'pending',
 };
 
 const DEFAULT_TASKS = [
@@ -21,7 +21,7 @@ const DEFAULT_TASKS = [
     created_at: '12 Oct',
     updated_at: '13 Oct',
     deadline: '15 Oct',
-    status: 'Pending',
+    status: 'pending',
   },
   {
     id: uuid(),
@@ -30,7 +30,7 @@ const DEFAULT_TASKS = [
     created_at: '12 Oct',
     updated_at: '13 Oct',
     deadline: '15 Oct',
-    status: 'Pending',
+    status: 'pending',
   },
 ];
 
@@ -56,13 +56,14 @@ const TaskManager = () => {
    * When user clicks submit on the task modal
    */
   const onTaskUpdateFinish = () => {
+    // if (!task.description) return;
     const now = new Date().toISOString();
 
     // if id is present that means we were editing a task
     if (selectedTask.id) {
       updateTask({ ...selectedTask, updated_at: now });
     } else {
-      // if id isnt present we are creating a new task
+      // if id is not present we are creating a new task
       createTask({
         ...selectedTask,
         created_at: now,
@@ -77,8 +78,8 @@ const TaskManager = () => {
 
   return (
     <>
-      <div className="flex flex-row h-screen">
-        <div className="flex-2 bg-gray-100 p-6 mr-2">
+      <div className="flex flex-row h-screen max-h-full overflow-auto p-4">
+        <div className="bg-gray-100 p-6 mr-2">
           <button
             type="button"
             className="p-2 m-1 bg-white-200 border-2 border-gray-800 text-xl"
@@ -88,20 +89,21 @@ const TaskManager = () => {
           </button>
         </div>
 
-        <div className="flex flex-col flex-1 ">
-          <h1 className="p-1 font-serif uppercase text-4xl text-gray-600">Task Manager</h1>
+        <div className="flex flex-col flex-1">
+          <h1 className="p-1 mb-2 font-serif uppercase text-4xl text-gray-600 text-center">
+            Task Manager
+          </h1>
 
-          <div className="flex items-start">
-            <TaskStatusCard
-              tasks={tasks}
-              onCreate={createTask}
-              onRemove={removeTask}
-              onEdit={(task) => {
-                setSelectedTask(task);
-                setShow(true);
-              }}
-            />
-          </div>
+          <TaskStatusCard
+            tasks={tasks}
+            updateTask={updateTask}
+            onCreate={createTask}
+            onRemove={removeTask}
+            onEdit={(task) => {
+              setSelectedTask(task);
+              setShow(true);
+            }}
+          />
 
           {/* <TaskList
             tasks={tasks}
